@@ -71,11 +71,11 @@ def lambda_handler(event, context):
     status_code = 200
 
     if difficulty == "easy":
-        body = {"graph": easy_graph}
+        body = easy_graph
     elif difficulty == "medium":
-        body = {"graph": medium_graph}
+        body = medium_graph
     else:
-        body = {"graph": hard_graph}
+        body = hard_graph
 
     return {
         "statusCode": status_code,
