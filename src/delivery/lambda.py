@@ -23,6 +23,32 @@ easy_graph = {
 }
 
 medium_graph = {
+    "vertices": ["A", "B", "C", "D", "E"],
+    "source": {
+        "A": {"x": 10, "y": 10},
+        "B": {"x": 10, "y": 90},
+        "C": {"x": 90, "y": 10},
+        "D": {"x": 90, "y": 90},
+        "E": {"x": 50, "y": 50},
+    },
+    "target": {
+        "A": {"x": 10, "y": 10},
+        "B": {"x": 90, "y": 10},
+        "C": {"x": 90, "y": 90},
+        "D": {"x": 10, "y": 90},
+        "E": {"x": 20, "y": 70},
+    },
+    "edges": [
+        {"start": "A", "end": "B"},
+        {"start": "B", "end": "C"},
+        {"start": "C", "end": "D"},
+        {"start": "D", "end": "A"},
+        {"start": "A", "end": "E"},
+        {"start": "C", "end": "E"},
+    ],
+}
+
+hard_graph = {
     "vertices": ["A", "B", "C", "D", "E", "F", "G", "H"],
     "source": {
         "A": {"x": 10, "y": 10},
@@ -59,8 +85,6 @@ medium_graph = {
         {"start": "G", "end": "H"},
     ],
 }
-
-hard_graph = {}
 
 
 def lambda_handler(event, context):
