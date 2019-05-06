@@ -77,4 +77,8 @@ def lambda_handler(event, context):
     else:
         body = {"graph": hard_graph}
 
-    return {"statusCode": status_code, "body": json.dumps(body)}
+    return {
+        "statusCode": status_code,
+        "body": json.dumps(body),
+        "headers": {"Access-Control-Allow-Origin": "*"},
+    }
