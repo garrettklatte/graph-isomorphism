@@ -1,0 +1,8 @@
+# tox
+.tox
+
+# emacs
+*~
+
+# virtualenv
+venv/
