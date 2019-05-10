@@ -1,7 +1,13 @@
 """Module defining the lambda delivery."""
 import dataclasses
 import json
+import os
 from typing import Any, Dict, Optional
+import sys
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
 
 from definitions.context import Context
 from definitions.exception import InvalidDifficulty, GraphNotFound
