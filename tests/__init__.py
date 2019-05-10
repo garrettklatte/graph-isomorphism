@@ -1,3 +1,4 @@
+"""Modify the system path to resolve imports properly."""
 import os
 import sys
 

@@ -1,10 +1,14 @@
+"""Tests for the graph_gateway module."""
+# pylint: disable=protected-access,invalid-name
 import pytest
 
+from definitions.exception import InvalidDifficulty, GraphNotFound
 from definitions.graph import Graph
 from gateways.graph_gateway import GraphGateway
 
 
 def test_make_easy_request():
+    """Return a request for an EASY graph."""
     # Given
     difficulty = "easy"
     identifier = 7
@@ -17,6 +21,7 @@ def test_make_easy_request():
 
 
 def test_make_medium_request():
+    """Return a request for a MEDIUM graph."""
     # Given
     difficulty = "medium"
     identifier = 7
@@ -29,6 +34,7 @@ def test_make_medium_request():
 
 
 def test_make_hard_request():
+    """Return a request for a HARD graph."""
     # Given
     difficulty = "hard"
     identifier = 7
@@ -40,17 +46,19 @@ def test_make_hard_request():
     assert request == {"Key": {"Difficulty": "HARD", "Id": 7}}
 
 
-def test_raise_ValueError_on_unrecognized_difficulty():
+def test_raise_InvalidDifficulty_on_unrecognized_difficulty():
+    """Raise an InvalidDifficulty expection when the user specifies an unrecognized difficulty."""
     # Given
     difficulty = "uber"
     identifier = 7
 
     # When & Then
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidDifficulty):
         GraphGateway._make_request(difficulty, identifier)
 
 
 def test_pluck_graph():
+    """Return a graph."""
     # Given
     response = {
         "Item": {
@@ -85,3 +93,13 @@ def test_pluck_graph():
         },
         vertices=["A", "B", "C", "D"],
     )
+
+
+def test_raise_GraphNotFound_when_graph_is_not_found():
+    """Raise a GraphNotFound expection when the response does not contain an item."""
+    # Given
+    response = {"Item": {}}
+
+    # When & Then
+    with pytest.raises(GraphNotFound):
+        GraphGateway._pluck_graph(response)
