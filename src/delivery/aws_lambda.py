@@ -1,4 +1,5 @@
 """Module defining the lambda delivery."""
+# pylint: disable=wrong-import-position
 import dataclasses
 import decimal
 import json
@@ -6,9 +7,7 @@ import os
 from typing import Any, Dict, Optional
 import sys
 
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-)
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from definitions.context import Context
 from definitions.exception import InvalidDifficulty, GraphNotFound
@@ -17,13 +16,17 @@ from use_cases import retrieve_graph
 
 
 class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
+    """Class for encoding Dnecimal objects in JSON."""
+
+    # pylint: disable=arguments-differ,method-hidden
+    def default(self, obj: Any) -> Any:
+        """Extend the default JSON encoder to handle Decimal objects."""
         if isinstance(obj, decimal.Decimal):
             if abs(obj) % 1 > 0:
                 return float(obj)
-            else:
-                return int(obj)
+            return int(obj)
         return super(DecimalEncoder, self).default(obj)
+
 
 def http_response(status_code: int, message: Any) -> Dict[str, Any]:
     """Generate an http response with 'status_code' with 'message' in the body."""
@@ -32,6 +35,7 @@ def http_response(status_code: int, message: Any) -> Dict[str, Any]:
         "body": json.dumps(message, cls=DecimalEncoder),
         "headers": {"Access-Control-Allow-Origin": "*"},
     }
+
 
 def lambda_handler(event: Dict[str, Any], _: Any) -> Dict[str, Any]:
     """Method that handles an 'event' with 'context'."""
