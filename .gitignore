@@ -12,3 +12,6 @@ venv/
 
 # python
 __pycache__/
+
+# serverless
+.serverless/
