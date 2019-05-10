@@ -1,0 +1,14 @@
+# tox
+.tox
+
+# emacs
+*~
+
+# virtualenv
+venv/
+
+# mypy
+.mypy_cache/
+
+# python
+__pycache__/
