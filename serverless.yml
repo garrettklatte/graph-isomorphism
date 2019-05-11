@@ -7,6 +7,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:GetItem
+        - dynamodb:Query
       Resource: arn:aws:dynamodb:us-east-1:784101061334:table/Graphs
 
 package:
@@ -20,6 +21,10 @@ functions:
     description: Fetch, add, and update graphs
     handler: src/delivery/aws_lambda.lambda_handler
     events:
+      - http:
+          path: graph/{difficulty}
+          method: get
+          cors: true
       - http:
           path: graphs/{difficulty}/{uri}
           method: get

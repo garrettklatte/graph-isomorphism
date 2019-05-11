@@ -1,5 +1,5 @@
 """Module defining the lambda delivery."""
-# pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position,too-many-return-statements
 import dataclasses
 import decimal
 import json
@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from definitions.context import Context
 from definitions.exception import InvalidDifficulty, GraphNotFound
 from gateways.graph_gateway import GraphGateway
-from use_cases import retrieve_graph
+from use_cases import retrieve_graph, retrieve_graphs
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -64,7 +64,10 @@ def lambda_handler(event: Dict[str, Any], _: Any) -> Dict[str, Any]:
                 )
             return http_response(200, dataclasses.asdict(graph))
         if difficulty and not uri:
-            http_response(404, "not implemented")
-        else:
-            return http_response(400, f"{difficulty} must be specified.")
-    return http_response(501, f"{http_method} is not implement.")
+            try:
+                graphs = retrieve_graphs(context, difficulty)
+            except InvalidDifficulty:
+                return http_response(400, f"Unrecognized difficulty: {difficulty}")
+            return http_response(200, graphs)
+        return http_response(400, f"{difficulty} must be specified.")
+    return http_response(501, f"{http_method} is not implemented.")

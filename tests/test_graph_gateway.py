@@ -1,5 +1,6 @@
 """Tests for the graph_gateway module."""
 # pylint: disable=protected-access,invalid-name
+from boto3.dynamodb.conditions import Key
 import pytest
 
 from definitions.exception import InvalidDifficulty, GraphNotFound
@@ -44,6 +45,33 @@ def test_make_hard_request():
 
     # Then
     assert request == {"Key": {"Difficulty": "HARD", "Id": 7}}
+
+
+def test_make_uris_request():
+    """Return a request for all URIs with easy difficulty."""
+    # Given
+    difficulty = "easy"
+
+    # When
+    request = GraphGateway._make_uris_request(difficulty)
+
+    # Then
+    assert request == {
+        "KeyConditionExpression": Key("Difficulty").eq("EASY"),
+        "ProjectionExpression": "Id",
+    }
+
+
+def test_pluck_uris():
+    """Return a list of uris."""
+    # Given
+    response = {"Items": [{"Id": 1}, {"Id": 2}]}
+
+    # When
+    uris = GraphGateway._pluck_uris(response)
+
+    # Then
+    assert uris == [1, 2]
 
 
 def test_raise_InvalidDifficulty_on_unrecognized_difficulty():

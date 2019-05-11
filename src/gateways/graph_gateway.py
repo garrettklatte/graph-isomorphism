@@ -1,8 +1,9 @@
 """Module defining the GraphGateway class."""
 # pylint: disable=too-few-public-methods
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import boto3
+from boto3.dynamodb.conditions import Key
 
 from definitions.exception import GraphNotFound, InvalidDifficulty
 from definitions.graph import Graph
@@ -15,7 +16,7 @@ class GraphGateway:
     def fetch_graph(difficulty: str, identifier: int) -> Graph:
         """Fetch the graph uniquely identified by 'difficulty' and 'identifier'. If 'difficulty'
         is not a valid difficulty, raise InvalidDifficulty. If no such graph exists, raise
-        GraphNotFound. Other, return the graph.
+        GraphNotFound. Otherwise, return the graph.
         """
         dynamodb = boto3.resource("dynamodb")
         table = dynamodb.Table("Graphs")
@@ -27,10 +28,37 @@ class GraphGateway:
         return GraphGateway._pluck_graph(response)
 
     @staticmethod
-    def _make_request(difficulty: str, identifier: int) -> Dict[str, Dict[str, Any]]:
+    def fetch_uris(difficulty: str) -> List[int]:
+        """Fetch a list of uris for graphs with 'difficulty'. If 'difficulty' is not a valid
+        difficulty, raise InvalidDifficulty. Otherwise, return the list.
+        """
+        dynamodb = boto3.resource("dynamodb")
+        table = dynamodb.Table("Graphs")
+
+        request = GraphGateway._make_uris_request(difficulty)
+        response = table.query(**request)
+        return GraphGateway._pluck_uris(response)
+
+    @staticmethod
+    def _make_uris_request(difficulty: str) -> Dict[str, Any]:
+        GraphGateway._validate_difficulty(difficulty)
+        return {
+            "KeyConditionExpression": Key("Difficulty").eq(difficulty.upper()),
+            "ProjectionExpression": "Id",
+        }
+
+    @staticmethod
+    def _pluck_uris(response: Dict[str, Any]) -> List[int]:
+        return [item["Id"] for item in response["Items"]]
+
+    @staticmethod
+    def _validate_difficulty(difficulty: str) -> None:
         if not difficulty.lower() in ("easy", "medium", "hard"):
             raise InvalidDifficulty
 
+    @staticmethod
+    def _make_request(difficulty: str, identifier: int) -> Dict[str, Dict[str, Any]]:
+        GraphGateway._validate_difficulty(difficulty)
         return {"Key": {"Difficulty": difficulty.upper(), "Id": identifier}}
 
     @staticmethod
