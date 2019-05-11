@@ -22,7 +22,7 @@ functions:
     handler: src/delivery/aws_lambda.lambda_handler
     events:
       - http:
-          path: graph/{difficulty}
+          path: graphs/{difficulty}
           method: get
           cors: true
       - http:
