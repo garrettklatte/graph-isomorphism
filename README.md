@@ -2,7 +2,7 @@
 
 <a href="https://github.com/python/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 
-RESTful API for storing, updating, and retrieving graphs. Deployed on AWS. Check out the [web application](https://github.com/garrettklatte/graph-isomorphism-webclient).
+RESTful API for storing, updating, and retrieving graphs. Deployed on AWS. Check out the [web application](https://github.com/garrettklatte/graph-isomorphism-webapp).
 
 ## Running tests
 
